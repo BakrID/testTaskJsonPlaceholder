@@ -1,1 +1,1 @@
-export { axiosInstance } from './AxiosInstance';
+export { fetchInternal } from './fetchInternal';
