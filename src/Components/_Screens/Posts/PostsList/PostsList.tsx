@@ -1,8 +1,10 @@
 import { Post } from '#API';
+import { ListSeparator } from '#Components/Common/ListSeparator';
 import { usePostsStore } from '#Store/PostsStore';
 import React, { useCallback, useEffect } from 'react';
 import { FlatList } from 'react-native';
 import { PostListRenderItem } from '../PostListRenderItem';
+import { ListKeyExtractor } from './PostList.utils';
 
 export const PostsList = () => {
   const fetchPosts = usePostsStore(state => state.fetchPosts);
@@ -23,7 +25,8 @@ export const PostsList = () => {
     <FlatList
       data={postIds}
       renderItem={renderItem}
-      keyExtractor={item => item.toString()}
+      keyExtractor={ListKeyExtractor}
+      ItemSeparatorComponent={ListSeparator}
     />
   );
 };
