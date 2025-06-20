@@ -31,7 +31,7 @@ local.properties
 *.iml
 *.hprof
 .cxx/
-*.keystore
+my-upload-key.keystore # Just because this key will not be used in any production build for that project
 !debug.keystore
 .kotlin/
 
