@@ -1,5 +1,21 @@
+import { PostDetailsView } from '#Components/_Screens/PostDetails/PostDetailsView';
+import {
+  RootNavigatorParamsList,
+  RootNavigatorScreens,
+} from '#Navigation/RootNavigator';
+import { RouteProp } from '@react-navigation/native';
 import { View } from 'react-native';
 
-export const PostDetailsScreen = () => {
-  return <View />;
+type Props = {
+  route: RouteProp<RootNavigatorParamsList, RootNavigatorScreens.PostDetails>;
+};
+
+export const PostDetailsScreen = ({ route }: Props) => {
+  const { postId } = route.params;
+
+  return (
+    <View>
+      <PostDetailsView postId={postId} />
+    </View>
+  );
 };

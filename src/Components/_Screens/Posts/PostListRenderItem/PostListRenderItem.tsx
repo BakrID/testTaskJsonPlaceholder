@@ -25,5 +25,5 @@ export const PostListRenderItem = ({ postId }: Props) => {
     return null;
   }
 
-  return <PostCell post={post} onPress={onPress} />;
+  return <PostCell title={post.title} onPress={onPress} />;
 };
