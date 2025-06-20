@@ -1,6 +1,8 @@
 import { Post, PostsSchema } from '#API';
 import { fetchInternal } from '#Services/Axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 /**
  * Why not just use Array<Post> instead of having postsMap and postIds?
@@ -15,23 +17,35 @@ type PostsStore = {
   fetchPosts: () => Promise<void>;
 };
 
-export const usePostsStore = create<PostsStore>(set => ({
-  postsMap: {},
-  postIds: [],
+export const usePostsStore = create<PostsStore>()(
+  persist(
+    set => ({
+      postsMap: {},
+      postIds: [],
 
-  fetchPosts: async () => {
-    const postsResponse = await fetchInternal({
-      url: 'posts',
-      method: 'GET',
-      schema: PostsSchema,
-    });
+      fetchPosts: async () => {
+        const postsResponse = await fetchInternal({
+          url: 'posts',
+          method: 'GET',
+          schema: PostsSchema,
+        });
 
-    set({
-      postsMap: postsResponse.reduce(
-        (acc, post) => ({ ...acc, [post.id]: post }),
-        {},
-      ),
-      postIds: postsResponse.map(post => post.id),
-    });
-  },
-}));
+        set({
+          postsMap: postsResponse.reduce(
+            (acc, post) => ({ ...acc, [post.id]: post }),
+            {},
+          ),
+          postIds: postsResponse.map(post => post.id),
+        });
+      },
+    }),
+    {
+      name: 'posts',
+      partialize: state => ({
+        postsMap: state.postsMap,
+        postIds: state.postIds,
+      }),
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
