@@ -1,16 +1,17 @@
 import { Post } from '#API';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { styles } from './PostCell.styles';
 
 type Props = {
   post: Post;
+  onPress: () => void;
 };
 
-export const PostCell = ({ post }: Props) => {
+export const PostCell = ({ post, onPress }: Props) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Text>{post.title}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };

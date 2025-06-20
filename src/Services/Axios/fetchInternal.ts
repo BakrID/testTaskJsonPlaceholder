@@ -25,5 +25,9 @@ export function fetchInternal<T>({
         // For example, title is required, but it's not in the response and etc
         // Then log it to sentry, so we can see that current backend changes broke the app on previous versions
       }
+    })
+    .catch(error => {
+      // Send error to sentry & pass further if needed
+      throw error;
     });
 }
