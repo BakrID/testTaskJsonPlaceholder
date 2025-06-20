@@ -1,97 +1,52 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Some tech overview:
 
-# Getting Started
+**Axios** - as main lib for fetching API
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+**Superstruct** - as great library to write schemas with ability to test objects for that schema, what helping to always know that API returning right response all time
 
-## Step 1: Start Metro
+**React Navigation** - Lib for navigation, used native stack as it more performant.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+**Zustand** - Cool atomic state manager lib, supporting all needed features for production apps, allowing to write clean and fast code
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+**RN Async Storage** - Enough for this case to persist Posts. But for bigger apps I prefer RN MMKV as MMKV is faster and async storage have some limitations.
 
-```sh
-# Using npm
-npm start
 
-# OR using Yarn
-yarn start
-```
+# Architecture overview
 
-## Step 2: Build and run your app
+## Project folder structure
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+I've built common project folder structure here, just because it's small app.
+But when app is growing, we can use Module approch, when we're placing Components, Screens, Stores, Consts, Utils inside one Module, for example:
+``
+src
+    Modules
+        Posts
+            Components
+            Screens
+            Store
+``
+But for that small example it's overhead.
 
-### Android
+## Storing data from API
 
-```sh
-# Using npm
-npm run android
+I've implemented `postsIds: Array<Post['id']>` & `postsMap: Record<Post['id'], Post>` because it's better for performance in several places. First of all accessing post by `posts[postId]` is much faster than `posts.find(post => post.id === postId)` when we have big list; Second is that it help to optimize list updates - when some post in `postsMap` is updating - it will not re-render all items and just only one.
 
-# OR using Yarn
-yarn android
-```
+## Zustand
 
-### iOS
+As I already mentioned above - it's cool atomic state managing library. Used this library in per-projects and in real apps in production, works great, boosting development comparing to Redux as you need to write much less code
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+# Setup / Run instractions
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+### Install deps
+`yarn install`
 
-```sh
-bundle install
-```
+### Install bundle & cocoapods (if you're going to run iOS, skip for Android)
+`cd ios && bundle install && bundle exec pod install`
 
-Then, and every time you update your native dependencies, run:
+### Running Debug iOS / Android
+`yarn ios` OR `yarn android`
 
-```sh
-bundle exec pod install
-```
+### In case of building Android APK
+`cd android && ./gradlew assembleRelease -p .`
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+OR if you want install release build to Android device / Emulator: `./gradlew installRelease -p .`
