@@ -14,6 +14,9 @@ type PostsStore = {
   postsMap: Record<number, Post>;
   postIds: Post['id'][];
 
+  isLoading: boolean;
+  error: string | null;
+
   fetchPosts: () => Promise<void>;
 };
 
@@ -23,20 +26,30 @@ export const usePostsStore = create<PostsStore>()(
       postsMap: {},
       postIds: [],
 
-      fetchPosts: async () => {
-        const postsResponse = await fetchInternal({
-          url: 'posts',
-          method: 'GET',
-          schema: PostsSchema,
-        });
+      isLoading: false,
+      error: null,
 
-        set({
-          postsMap: postsResponse.reduce(
-            (acc, post) => ({ ...acc, [post.id]: post }),
-            {},
-          ),
-          postIds: postsResponse.map(post => post.id),
-        });
+      fetchPosts: async () => {
+        try {
+          set({ isLoading: true, error: null });
+          const postsResponse = await fetchInternal({
+            url: 'posts',
+            method: 'GET',
+            schema: PostsSchema,
+          });
+
+          set({
+            postsMap: postsResponse.reduce(
+              (acc, post) => ({ ...acc, [post.id]: post }),
+              {},
+            ),
+            postIds: postsResponse.map(post => post.id),
+          });
+        } catch (error) {
+          set({ error: 'Failed to fetch posts' }); // Just generally handling error
+        } finally {
+          set({ isLoading: false });
+        }
       },
     }),
     {
