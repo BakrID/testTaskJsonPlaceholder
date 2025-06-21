@@ -1,3 +1,7 @@
+# Built apk file
+
+[app-release.apk](app-release.apk)
+
 # Some tech overview:
 
 **Axios** - as main lib for fetching API
